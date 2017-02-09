@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableHighlight,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import buffer from 'buffer';
 
@@ -30,7 +31,7 @@ class Login extends Component {
     return(
       <View style={styles.container}>
         <Image style={styles.logo}
-        source={require('./user_login_logo.png')}
+        source={require('./icon.png')}
         />
         <Text style={styles.heading}>FOTOS</Text>
         <Text style={styles.subHeading}>Memories worth to remember</Text>
@@ -63,49 +64,34 @@ class Login extends Component {
   onLoginPressed(){
     this.setState({showProgress: true});
 
-    var b = new buffer.Buffer(this.state.username +
-      ':' + this.state.password);
-    var encodedAuth = b.toString('base64');
+    var authService = require('./AuthService');
+     authService.login({
+      username: this.state.username,
+      password: this.state.password
+    },(results)=>{
+      this.setState(Object.assign({
+        showProgress: false
+        }, results ));
 
-    fetch('https://api.github.com/user',{
-      headers: {
-        'Authorization' : 'Basic ' + encodedAuth
-      }
-    })
-      .then((response)=>{
-        if(response.status >= 200 && response.status < 300 )
-        {
-          return response;
+        if(results.success && this.props.onLogin){
+        this.props.onLogin();
         }
-        throw{
-          badCredentials: response.status == 401,
-          unknownError: response.status != 401,
-        }
-      })
-      .then((response)=>{
-        return response.json();
-      })
-      .then((results)=> {
-        console.log(results);
-      })
-      .catch((err)=>{
-        this.setState(err);
-      })
-      .finally(()=>{
-        this.setState({showProgress: false});
-      }
-    )
-
+    });
 
   }
 }
 
-
-
 var styles = StyleSheet.create({
 
   container:{
+    ...Platform.select({
+      ios: {
     backgroundColor: '#d3d3d3',
+  },
+  android:{
+    backgroundColor: '#faebd7',
+  },
+}),
     flex: 1,
     alignItems: 'center',
     paddingTop:40,
@@ -124,12 +110,25 @@ var styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   input: {
+    ...Platform.select({
+      ios: {
       height: 45,
       marginTop: 10,
       padding: 3,
       fontSize: 16,
       borderWidth: 1,
       borderColor: '#000000'
+    },
+    android: {
+      height: 45,
+      width:380,
+      marginTop: 10,
+      padding: 3,
+      fontSize: 16,
+      borderWidth: 1,
+      borderColor: '#000000'
+    }
+  }),
   },
   button: {
     height: 40,
@@ -153,5 +152,7 @@ var styles = StyleSheet.create({
     marginTop: 10,
   }
 })
+
+
 
 module.exports = Login;

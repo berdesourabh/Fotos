@@ -10,11 +10,26 @@ import Login from './Login';
 
 export default class Fotos extends Component {
   render() {
-    var message= 'Hello world again'
+    if(this.state.isLoggedIn)
+    {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>Welcome</Text>
+          </View>
+      );
+  }else{
     return (
-      <Login />
+      <Login onLogin = {this.onLogin}/>
     );
   }
+  }
+  onLogin() {
+    this.setState({isLoggedIn:true});
+  }
+constructor(props){
+  super(props);
+  this.state = {isLoggedIn:false};
+}
 }
 
 const styles = StyleSheet.create({
