@@ -9,6 +9,10 @@ import {
 import Login from './Login';
 
 export default class Fotos extends Component {
+  constructor(props){
+    super(props);
+    this.state = {isLoggedIn:false};
+  }
   render() {
     if(this.state.isLoggedIn)
     {
@@ -26,10 +30,7 @@ export default class Fotos extends Component {
   onLogin() {
     this.setState({isLoggedIn:true});
   }
-constructor(props){
-  super(props);
-  this.state = {isLoggedIn:false};
-}
+
 }
 
 const styles = StyleSheet.create({

@@ -6,15 +6,33 @@ import {
   Text,
   View
 } from 'react-native';
-import Login from './Login';
+import Login from './app/component/Login';
+import Home from './app/component/Home';
 
 export default class Fotos extends Component {
+  constructor(props){
+    super(props);
+    this.state =
+    {
+      isLoggedIn:false
+    };
+  }
   render() {
-    var message= 'Hello world again'
-    return (
-      <Login />
-    );
-  },
+      if(this.state.isLoggedIn)
+      {
+        return(
+          <Home />
+        );
+      }else{
+        return(
+      <Login onLogin={this.onLogin}/>
+      );
+    }
+
+  }
+  onLogin = () => {
+    this.setState({isLoggedIn: true});
+  }
 }
 
 const styles = StyleSheet.create({
